@@ -23,6 +23,8 @@ login_manger.login_view = 'users.login'
 #### App Setup ###
 from petcompanyblog.core.views import core
 from petcompanyblog.error_pages.handlers import error_pages
+from petcompanyblog.users.views import users
 
 app.register_blueprint(core)
 app.register_blueprint(error_pages)
+app.register_blueprint(users)

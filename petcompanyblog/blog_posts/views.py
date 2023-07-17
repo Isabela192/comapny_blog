@@ -1,4 +1,4 @@
-from flask import render_template,url_for,flash, redirect,request,Blueprint
+from flask import render_template,url_for,flash, redirect, request, Blueprint, abort
 from flask_login import current_user,login_required
 from petcompanyblog import db
 from petcompanyblog.models import BlogPost
@@ -6,6 +6,7 @@ from petcompanyblog.blog_posts.forms import BlogPostForm
 
 blog_posts = Blueprint('blog_posts',__name__)
 
+#Create
 @blog_posts.route('/create',methods=['GET','POST'])
 @login_required
 def create_post():
@@ -24,9 +25,7 @@ def create_post():
 
     return render_template('create_post.html',form=form)
 
-
-# int: makes sure that the blog_post_id gets passed as in integer
-# instead of a string so we can look it up later.
+#Read
 @blog_posts.route('/<int:blog_post_id>')
 def blog_post(blog_post_id):
     # grab the requested blog post by id number or return 404
@@ -35,6 +34,7 @@ def blog_post(blog_post_id):
                             date=blog_post.date,post=blog_post
     )
 
+#update
 @blog_posts.route("/<int:blog_post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update(blog_post_id):
@@ -50,8 +50,7 @@ def update(blog_post_id):
         db.session.commit()
         flash('Post Updated')
         return redirect(url_for('blog_posts.blog_post', blog_post_id=blog_post.id))
-    # Pass back the old blog post information so they can start again with
-    # the old text and title.
+
     elif request.method == 'GET':
         form.title.data = blog_post.title
         form.text.data = blog_post.text
@@ -59,6 +58,7 @@ def update(blog_post_id):
                            form=form)
 
 
+#Delete
 @blog_posts.route("/<int:blog_post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(blog_post_id):
